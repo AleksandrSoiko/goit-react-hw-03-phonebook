@@ -9,9 +9,25 @@ import phones from '../../src/data.json';
 
 export class App extends Component {
   state = {
-    contacts: [...phones],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContact = localStorage.getItem('contacts');
+    if (savedContact !== null) {
+      const parsedContacts = JSON.parse(savedContact);
+      this.setState({ contacts: parsedContacts });
+      return;
+    }
+    this.setState({ contacts: [...phones] });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   onDelete = id => {
     this.setState(prevState => ({
